@@ -1,0 +1,29 @@
+# OraVCS
+
+oravcs:
+  export: export
+  install:
+    # path to datafile where oravcs would reside
+    datafile: /u01/app/oracle/oradata/XE/oravcs.dbf
+    # user with CREATE USER privilege to create OraVCS user
+    dba: sys/some_insane_password@yourserver.com:1521/XE as sysdba
+  connection: oravcs/some_password@yourserver.com:1521/XE
+  ddl_order: id
+  ddl_filter: 1=1
+  schema:
+    - name: oravcs~
+      download_only: yes
+    - name: dwh
+      download_only: yes
+    - name: crm
+      download_only: no
+    - name: erp
+      download_only: no
+    - name: hr
+      ddl_filter: case
+                    when obj_type='TABLE' and
+                         obj_name like '%LOV'
+                    then 0
+                    else id
+                   end
+
