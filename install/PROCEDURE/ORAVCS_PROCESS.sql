@@ -71,7 +71,7 @@ BEGIN
           END IF;
 
           clob_th := DBMS_METADATA.ADD_TRANSFORM(clob_h, 'MODIFY');
-          DBMS_METADATA.SET_REMAP_PARAM(clob_th, 'REMAP_SCHEMA', USER, NULL);
+          DBMS_METADATA.SET_REMAP_PARAM(clob_th, 'REMAP_SCHEMA', schema_in, NULL);
 
           clob_th := DBMS_METADATA.ADD_TRANSFORM(clob_h, 'DDL');
 
