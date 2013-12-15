@@ -106,6 +106,10 @@ def mkdir(path):
         os.makedirs(path)
 
 
+def sequence_replace(ddl):
+    return re.sub(r'START WITH \d+', 'START WITH 1', ddl)
+
+
 @debug
 def export_schema(config, schema):
     basedir = config['oravcs']['export']
@@ -160,7 +164,10 @@ def export_schema(config, schema):
         filename = os.path.join(current_dir, '%s.sql' % row[1])
 
         ddl_file = open(filename, 'w')
-        ddl_file.write(row[2].read()+'\n')  # arbitrary newline at end of file
+        ddl = row[2].read()
+        if 'CREATE SEQUENCE' in ddl:
+            ddl = sequence_replace(ddl)
+        ddl_file.write(ddl+'\n')  # arbitrary newline at end of file
         ddl_file.close()
 
         build_all_lines.append('@%s.sql\n' % os.path.join(row[0], row[1]))
