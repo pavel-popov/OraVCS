@@ -43,14 +43,12 @@ BEGIN
       object_name := xml_data.extract('/ROWSET/ROW/*[1]/SCHEMA_OBJ/NAME/text()').getStringVal();
       xml_type    := XMLType(xml_data.extract('/ROWSET/ROW/*[1]').getClobVal()).getRootElement();
 
-      --dbms_output.put_line('object_type = '||object_type);
-      --dbms_output.put_line('object_name = '||object_name);
       oravcs_logger('object_type '||object_type);
       oravcs_logger('object_name '||object_name);
 
       IF object_type IS NOT NULL
         AND object_name IS NOT NULL
-        AND NOT object_type in ('TABLE PARTITION')
+        AND NOT object_type in ('TABLE PARTITION', 'SCHEDULER JOB')
         AND NOT xml_type like 'ALTER%'
         AND NOT xml_type = 'TABLE_DATA_T'
       THEN
