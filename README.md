@@ -24,5 +24,7 @@ commit to repository.
 
 ## License
 
-See [License](license.txt).
+See [License](LICENSE).
 
+
+[OraDDL]: https://bitbucket.org/schmooser/oraddl

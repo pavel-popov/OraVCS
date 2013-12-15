@@ -53,7 +53,7 @@ def debug(fn):
         logger.debug('Args: %s', str(args))
         logger.debug('Kwargs: %s', str(kwargs))
         r = fn(*args, **kwargs)
-        logger.debug('%s finished with result %s', str(fn), str(r))
+        logger.debug('Finished %s with result %s', str(fn), str(r))
 
     return inner
 
@@ -106,9 +106,6 @@ def mkdir(path):
         os.makedirs(path)
 
 
-def fill_param(param_name, param_value, arr):
-    return param_value if param_name not in arr else arr[param_name]
-
 @debug
 def export_schema(config, schema):
     basedir = config['oravcs']['export']
@@ -151,7 +148,7 @@ def export_schema(config, schema):
              WHERE UPPER(schema) = UPPER(:schema)
                AND %s
              ORDER BY %s, id''' % (ddl_filter, ddl_order)
-    # logger.debug('Query: %s', query)
+    logger.debug('Query: %s', query)
 
     cursor.prepare(query)
     cursor.execute(None, {'schema': schema['name']})
@@ -163,7 +160,7 @@ def export_schema(config, schema):
         filename = os.path.join(current_dir, '%s.sql' % row[1])
 
         ddl_file = open(filename, 'w')
-        ddl_file.write(row[2].read())
+        ddl_file.write(row[2].read()+'\n')  # arbitrary newline at end of file
         ddl_file.close()
 
         build_all_lines.append('@%s.sql\n' % os.path.join(row[0], row[1]))
@@ -190,6 +187,7 @@ def main():
     # install(config, create_user=True)  # tested - works
     # install(config)
     export(config)
+
 
 if __name__ == '__main__':
     logger_setup(logger)
