@@ -150,8 +150,7 @@ def export_schema(config, schema):
              ORDER BY %s, id''' % (ddl_filter, ddl_order)
     logger.debug('Query: %s', query)
 
-    cursor.prepare(query)
-    cursor.execute(None, {'schema': schema['name']})
+    cursor.execute(query, schema=schema['name'])
 
     for row in cursor:
         current_dir = os.path.join(schema_dir, row[0])
