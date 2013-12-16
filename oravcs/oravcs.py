@@ -108,27 +108,28 @@ def mkdir(path):
 
 @debug
 def export_schema(config, schema):
-    basedir = config['oravcs']['export']
-    connection_string = config['oravcs']['connection']
-
-
+    basedir = config['export']
+    connection_string = config['connection']
     schema_name = schema['name']
+    
     logger.info('Processing schema %s', schema_name)
+    
     schema_dir = os.path.join(basedir, schema_name)
     rmdir(schema_dir)
     mkdir(schema_dir)
+    
     build_all = open(os.path.join(schema_dir, 'build_all.sql'), 'w')
     build_all_lines = ['WHENEVER OSERROR EXIT 1\n', 'WHENEVER SQLERROR EXIT 2\n']
 
     if 'ddl_filter' in schema:
         ddl_filter = schema['ddl_filter']
     else:
-        ddl_filter = config['oravcs']['ddl_filter']
+        ddl_filter = config['ddl_filter']
 
     if 'ddl_order' in schema:
         ddl_order = schema['ddl_order']
     else:
-        ddl_order = config['oravcs']['ddl_order']
+        ddl_order = config['ddl_order']
 
     connection = cx_Oracle.connect(connection_string)
     connection.autocommit = 0
@@ -180,7 +181,7 @@ def export_schema(config, schema):
 def export(config):
     es = lambda x: export_schema(config=config, schema=x)
     not_hidden = lambda x: x['name'][-1] != '~'
-    map(es, filter(not_hidden, config['oravcs']['schema']))
+    map(es, filter(not_hidden, config['schema']))
 
 
 @debug
@@ -188,7 +189,7 @@ def main():
     config = load_config()
     # install(config, create_user=True)  # tested - works
     # install(config)
-    export(config)
+    export(config['oravcs'])
 
 
 if __name__ == '__main__':
