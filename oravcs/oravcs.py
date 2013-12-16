@@ -82,13 +82,13 @@ def install(config, **kwargs):
     os.chdir(basedir)
 
     if 'create_user' in kwargs:
-        connection_string = config['oravcs']['install']['dba']
-        datafile = config['oravcs']['install']['datafile']
-        username, password = re.split('\W+', config['oravcs']['connection'])[0:2]
+        connection_string = config['install']['dba']
+        datafile = config['install']['datafile']
+        username, password = re.split('\W+', config['connection'])[0:2]
         sqlplus_exec(connection_string, 'create_user.sql', username, password, datafile)
 
     # installing schema
-    connection_string = config['oravcs']['connection']
+    connection_string = config['connection']
     sqlplus_exec(connection_string, 'build_all.sql')
 
 
@@ -187,8 +187,8 @@ def export(config):
 @debug
 def main():
     config = load_config()
-    # install(config, create_user=True)  # tested - works
-    # install(config)
+    # install(config['oravcs'], create_user=True)  # tested - works
+    # install(config['oravcs'])
     export(config['oravcs'])
 
 
