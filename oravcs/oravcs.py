@@ -20,7 +20,7 @@ import cx_Oracle
 __author__ = 'Pavel Popov'
 __email__ = 'pavelpopov@outlook.com'
 __license__ = 'GPL'
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 __status__ = 'Prototype'
 
 
@@ -106,10 +106,6 @@ def mkdir(path):
         os.makedirs(path)
 
 
-def sequence_replace(ddl):
-    return re.sub(r'START WITH \d+', 'START WITH 1', ddl)
-
-
 @debug
 def export_schema(config, schema):
     basedir = config['oravcs']['export']
@@ -166,7 +162,7 @@ def export_schema(config, schema):
         ddl_file = open(filename, 'w')
         ddl = row[2].read()
         if 'CREATE SEQUENCE' in ddl:
-            ddl = sequence_replace(ddl)
+            ddl = re.sub(r'START WITH \d+', 'START WITH 1', ddl)  # replace sequence number
         ddl_file.write(ddl+'\n')  # arbitrary newline at end of file
         ddl_file.close()
 
