@@ -266,11 +266,11 @@ def commit_schema(schema):
 
     # commit
     git.commit('-m', key(schema['git'], 'comment', 'OraVCS autocommit'))
-    git.info('Commit succeeded')
+    logger.info('Commit succeeded')
 
     if key(schema['git'], 'push', True):
         git.push.origin(branch)
-        git.info('Branch pushed to origin')
+        logger.info('Branch pushed to origin')
 
 
 @debug
