@@ -24,7 +24,7 @@ __status__ = 'Prototype'
 
 
 # HOME DIR
-ORAVCS_HOME = os.path.dirname(__file__)
+ORAVCS_HOME = os.getcwd()
 
 # config dictionary
 CONFIG = None
@@ -67,10 +67,9 @@ def debug(fn):
 
         try:
             r = fn(*args, **kwargs)
+            logger.debug('Finished %s with result %s', str(fn), str(r))
         except Exception, e:
-            logger.error('Error occured: %s - %s', str(e.args), e.message)
-
-        logger.debug('Finished %s with result %s', str(fn), str(r))
+            logger.error('Error at %s occured: %s - %s', str(fn), str(e.args), e.message)
 
     return inner
 
@@ -89,6 +88,7 @@ def logger_setup(logger, format=LOGFORMAT, datefmt='%Y-%m-%d %H:%M:%S'):
     logger.addHandler(stream_handler)
     logger.addHandler(file_handler)
 
+
 @debug
 def sqlplus_exec(connection_string, script, *args):
     # logger.debug('script: %s', script)
@@ -105,7 +105,7 @@ def sqlplus_exec(connection_string, script, *args):
 def install(args):
     """Install Oracle schema objects"""
 
-    basedir = os.path.join(ORAVCS_HOME, '..', 'install')
+    basedir = key(CONFIG['install'], 'path', os.path.join(os.path.dirname(__file__), '..', 'install'))
     os.chdir(basedir)
 
     if args.create_user:
