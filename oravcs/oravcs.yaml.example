@@ -1,29 +1,38 @@
-# OraVCS
+# OraVCS example config file in YAML format
 
-oravcs:
-  export: export
-  install:
-    # path to datafile where oravcs would reside
-    datafile: /u01/app/oracle/oradata/XE/oravcs.dbf
-    # user with CREATE USER privilege to create OraVCS user
-    dba: sys/some_insane_password@yourserver.com:1521/XE as sysdba
-  connection: oravcs/some_password@yourserver.com:1521/XE
-  ddl_order: id
-  ddl_filter: 1=1
-  schema:
-    - name: oravcs~
-      download_only: yes
-    - name: dwh
-      download_only: yes
-    - name: crm
-      download_only: no
-    - name: erp
-      download_only: no
-    - name: hr
-      ddl_filter: case
-                    when obj_type='TABLE' and
-                         obj_name like '%LOV'
-                    then 0
-                    else id
-                   end
+export: export  # dir under oravcs.py dir to place exported schemas to
+repos: repos    # dir under oravcs.py dir to place repositories
+log: oravcs.log
+install:
+  datafile: /u01/app/oracle/oradata/XE/oravcs.dbf        # path to datafile where oravcs would reside
+  dba: sys/somepassword@sitename.com:1521/SID as sysdba  # user with CREATE USER privilege to create OraVCS user
+connection: oravcs/oravcspassword@sitename.com:1521/SID  # connection to schema where OraVCS objects are installed
+ddl_order: id  # sort as oracle itself want to sort objects
+ddl_filter: 1=1  # if some object are not for exporting then filter them out
+schema:
+  - name: oravcs~  # ~ at the end of schema name means that it's skipped
+    regenerate: no  # regenerate objects, default - yes
+  - name: crm
+    git:  # if no git section on schema then commit to git is not possible
+      subdir: schema  # places exported objects into this directory
+      repo: git@bitbucket.org:username/repository.git  # currently only with default keys without passphrase
+      # repo: https://username:password@bitbucket.org/username/repository.git  # https also supported
+      branch: branchname-dev
+      from_schema: dev  # if you'd like to put objects from another schema, default - None
+      push: yes  # default - yes
+  - name: dev
+    ddl_order: case
+                  when obj_type='TABLE' and
+                       obj_name like '%LOV'
+                  then 0
+                  else id
+                end  # overrides settings from parent level, part of SQL-statement
+    ddl_filter: obj_name not like '%DEMO%'
+                and obj_type<>'TRIGGER'
+                and not (obj_type='INDEX' and obj_name like '%_PK')
+                and not (obj_type='INDEX' and obj_name like '%_SK')
+                and not (obj_type='FUNCTION' and obj_name like 'CUSTOM%')
+                and not (obj_type='INDEX' and obj_name like 'SYS%') # overrides settings from parent level, part of SQL-statement
+  - name: erp
+
 
