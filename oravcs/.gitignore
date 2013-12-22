@@ -1,2 +1,5 @@
 export/
+repos/
 *.yaml
+*.sh
+test.py
