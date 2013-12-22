@@ -19,7 +19,7 @@ import cx_Oracle
 __author__ = 'Pavel Popov'
 __email__ = 'pavelpopov@outlook.com'
 __license__ = 'GPL'
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 __status__ = 'Prototype'
 
 
