@@ -90,9 +90,9 @@ BEGIN
 
         oravcs_logger('Inserting metadata for '||object_type||' '||schema_in||'.'||object_name);
 
-        INSERT INTO oravcs.oravcs_metadata(id, schema, created_at,
+        INSERT INTO oravcs_metadata(id, schema, created_at,
                                            md, xml, obj_type, obj_name)
-        VALUES (oravcs.oravcs_seq.nextval, schema_in, systimestamp,
+        VALUES (oravcs_seq.nextval, schema_in, systimestamp,
                 clob_data, xml_data, object_type, object_name);
 
         DBMS_METADATA.CLOSE(clob_h);
